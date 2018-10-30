@@ -1,0 +1,87 @@
+{
+  "version": 2,
+  "timeout": "4000ms",
+  "name": "ios-gateway",
+  "host": [ "http://fake_api:8080" ],
+  "endpoints": [
+      {
+        "endpoint": "/splash",
+        "backend": [
+          {
+            "url_pattern": "/shop/campaigns.json",
+            "whitelist": [ "campaigns" ],
+            "extra_config": {
+              "github.com/devopsfaith/krakend-httpcache":{}
+            }
+          },
+          {
+            "url_pattern": "/shop/products.json",
+            "whitelist": [ "products" ],
+            "extra_config": {
+              "github.com/devopsfaith/krakend-httpcache":{}
+            }
+          }
+        ]
+      },
+      {
+        "endpoint": "/fail",
+        "backend": [
+          {
+            "url_pattern": "/user/1.json",
+            "group": "user"
+          },
+          {
+            "host": [ "http://fake_url_that_should_not_resolve.tld" ],
+            "url_pattern": "/",
+            "group": "none"
+          }
+        ]
+      },
+      {
+        "endpoint": "/public",
+        "backend": [
+          {
+            "host": [ "https://api.github.com" ],
+            "url_pattern": "/users/kpacha",
+            "whitelist": [
+              "avatar_url",
+              "name",
+              "company",
+              "blog",
+              "location",
+              "mail",
+              "hireable",
+              "followers",
+              "public_repos",
+              "public_gists"
+            ],
+            "mapping": { "blog": "website" },
+            "group": "github"
+          },
+          {
+            "host": [ "https://api.bitbucket.org" ],
+            "url_pattern": "/2.0/users/kpacha",
+            "whitelist": [
+              "links.avatar",
+              "display_name",
+              "website",
+              "location"
+            ],
+            "mapping": { "display_name": "name" },
+            "group": "bitbucket"
+          }
+        ]
+      }
+    ],
+  "extra_config": {
+    "github_com/devopsfaith/krakend-gologging": {
+      "level": "DEBUG",
+      "syslog": false,
+      "stdout": true
+    },
+    "github_com/devopsfaith/krakend-metrics": {
+      "collection_time": "1m",
+      "listen_address": "127.0.0.1:8090"
+    }
+  }
+}

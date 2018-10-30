@@ -68,14 +68,14 @@ type Item struct {
 type Request struct {
 	URL         string   `json:"url"`
 	Method      string   `json:"method"`
-	Header      []Header `json:"header"`
-	Body        Body     `json:"body"`
+	Header      []Header `json:"header,omitempty"`
+	Body        *Body    `json:"body,omitempty"`
 	Description string   `json:"description,omitempty"`
 }
 
 type Body struct {
-	Mode string `json:"mode"`
-	Raw  string `json:"raw"`
+	Mode string `json:"mode,omitempty"`
+	Raw  string `json:"raw,omitempty"`
 }
 
 type Header []struct {
