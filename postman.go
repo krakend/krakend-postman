@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/devopsfaith/krakend/config"
+	"github.com/go-contrib/uuid"
 )
 
 // HandleCollection returns a simple http.HandleFunc exposing the POSTMAN collection description
@@ -28,6 +29,7 @@ func Parse(cfg config.ServiceConfig) Collection {
 	c := Collection{
 		Info: Info{
 			Name:        cfg.Name,
+			PostmanID:   uuid.NewV4().String(),
 			Description: fmt.Sprintf("collection parsed at %s", time.Now().String()),
 			Schema:      "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		},
