@@ -1,17 +1,17 @@
 package postman
 
 import (
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"regexp"
 
 	"github.com/devopsfaith/krakend/config"
 )
 
 func ExampleParse() {
 	c := Parse(config.ServiceConfig{
+		Port: 8080,
 		Name: "sample",
 		Endpoints: []*config.EndpointConfig{
 			{
@@ -29,53 +29,76 @@ func ExampleParse() {
 	fmt.Println(len(c.Item))
 	fmt.Printf("%+v\n", c.Item[0])
 	fmt.Printf("%+v\n", c.Item[1])
+	fmt.Println(len(c.Variables))
+	fmt.Printf("%+v\n", c.Variables[0].Key)
+	fmt.Printf("%+v\n", c.Variables[0].Value)
+	fmt.Printf("%+v\n", c.Variables[0].Type)
+	fmt.Printf("%+v\n", c.Variables[1].Key)
+	fmt.Printf("%+v\n", c.Variables[1].Value)
+	fmt.Printf("%+v\n", c.Variables[1].Type)
 	// output:
 	// sample
-	// https://schema.getpostman.com/json/collection/v2.0.0/collection.json
+	// https://schema.getpostman.com/json/collection/v2.1.0/collection.json
 	// 2
-	// {Name:/foo Request:{URL:/foo Method:GET Header:[] Body:{Mode: Raw:} Description:}}
-	// {Name:/bar Request:{URL:/bar Method:POST Header:[] Body:{Mode: Raw:} Description:}}
+	// {Name:/foo Request:{URL:{Raw:{{SCHEMA}}://{{HOST}}/foo Protocol:{{SCHEMA}} Host:[{{HOST}}] Path:[foo]} Method:GET Header:[] Body:<nil> Description:}}
+	// {Name:/bar Request:{URL:{Raw:{{SCHEMA}}://{{HOST}}/bar Protocol:{{SCHEMA}} Host:[{{HOST}}] Path:[bar]} Method:POST Header:[] Body:<nil> Description:}}
+	// 2
+	// HOST
+	// localhost:8080
+	// string
+	// SCHEMA
+	// http
+	// string
 }
 
 func ExampleHandleCollection() {
-	c := Parse(config.ServiceConfig{
+	cfg := config.ServiceConfig{
+		Port: 8080,
 		Name: "sample",
 		Endpoints: []*config.EndpointConfig{
 			{
 				Endpoint: "/foo",
 				Method:   "GET",
 			},
-			{
-				Endpoint: "/bar",
-				Method:   "POST",
-			},
 		},
-	})
+	}
 
-	ts := httptest.NewServer(http.HandlerFunc(HandleCollection(c)))
+	ts := httptest.NewServer(http.HandlerFunc(HandleCollection(Parse(cfg))))
 	defer ts.Close()
 
 	res, err := http.Get(ts.URL)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	body, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
 
-	matched, err := regexp.Match(pattern, body)
-	if err != nil {
+	c := Collection{}
+	if err := json.NewDecoder(res.Body).Decode(&c); err != nil {
 		fmt.Println(err.Error())
 	}
-	if !matched {
-		fmt.Println(string(body))
-	}
-	fmt.Println("ok")
+	res.Body.Close()
+
+	fmt.Println(c.Info.Name)
+	fmt.Println(c.Info.Schema)
+	fmt.Println(len(c.Item))
+	fmt.Printf("%+v\n", c.Item[0])
+	fmt.Println(len(c.Variables))
+	fmt.Printf("%+v\n", c.Variables[0].Key)
+	fmt.Printf("%+v\n", c.Variables[0].Value)
+	fmt.Printf("%+v\n", c.Variables[0].Type)
+	fmt.Printf("%+v\n", c.Variables[1].Key)
+	fmt.Printf("%+v\n", c.Variables[1].Value)
+	fmt.Printf("%+v\n", c.Variables[1].Type)
 
 	// output:
-	// ok
+	// sample
+	// https://schema.getpostman.com/json/collection/v2.1.0/collection.json
+	// 1
+	// {Name:/foo Request:{URL:{Raw:{{SCHEMA}}://{{HOST}}/foo Protocol:{{SCHEMA}} Host:[{{HOST}}] Path:[foo]} Method:GET Header:[] Body:<nil> Description:}}
+	// 2
+	// HOST
+	// localhost:8080
+	// string
+	// SCHEMA
+	// http
+	// string
 }
-
-var pattern = `{"info":{"name":"sample","_postman_id":"","description":"collection parsed at (.*)","schema":"https:\/\/schema\.getpostman\.com\/json\/collection\/v2\.0\.0\/collection\.json"},"item":\[{"name":"\/foo","request":{"url":"\/foo","method":"GET","header":null,"body":{"mode":"","raw":""}}},{"name":"\/bar","request":{"url":"\/bar","method":"POST","header":null,"body":{"mode":"","raw":""}}}\]}`
