@@ -30,23 +30,26 @@ func Parse(cfg config.ServiceConfig) Collection {
 	if cfg.TLS != nil {
 		schema = "https"
 	}
+	uuid0, _ := uuid.NewV4()
+	uuid1, _ := uuid.NewV4()
+	uuid2, _ := uuid.NewV4()
 	c := Collection{
 		Info: Info{
 			Name:        cfg.Name,
-			PostmanID:   uuid.NewV4().String(),
+			PostmanID:   uuid0.String(),
 			Description: fmt.Sprintf("collection parsed at %s", time.Now().String()),
 			Schema:      "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		},
 		Item: []Item{},
 		Variables: []Variable{
 			{
-				ID:    uuid.NewV4().String(),
+				ID:    uuid1.String(),
 				Key:   "HOST",
 				Type:  "string",
 				Value: fmt.Sprintf("localhost:%d", cfg.Port),
 			},
 			{
-				ID:    uuid.NewV4().String(),
+				ID:    uuid2.String(),
 				Key:   "SCHEMA",
 				Type:  "string",
 				Value: schema,
