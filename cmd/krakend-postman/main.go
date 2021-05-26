@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	postman "github.com/devopsfaith/krakend-postman"
-	"github.com/devopsfaith/krakend/config"
+	"github.com/luraproject/lura/config"
 )
 
 func main() {

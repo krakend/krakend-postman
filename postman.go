@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/devopsfaith/krakend/config"
 	"github.com/go-contrib/uuid"
+	"github.com/luraproject/lura/config"
 )
 
 // HandleCollection returns a simple http.HandleFunc exposing the POSTMAN collection description
