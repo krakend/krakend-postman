@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/luraproject/lura/config"
+	"github.com/luraproject/lura/v2/config"
 )
 
 func ExampleParse() {

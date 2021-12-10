@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/go-contrib/uuid"
-	"github.com/luraproject/lura/config"
+	"github.com/luraproject/lura/v2/config"
 )
 
 // HandleCollection returns a simple http.HandleFunc exposing the POSTMAN collection description
