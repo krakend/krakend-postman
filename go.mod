@@ -1,4 +1,4 @@
-module github.com/devopsfaith/krakend-postman
+module github.com/devopsfaith/krakend-postman/v2
 
 go 1.16
 
