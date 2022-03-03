@@ -35,6 +35,8 @@ github.com/leodido/go-urn v1.2.0/go.mod h1:+8+nEpDfqqsY+g338gtMEUOtuK+4dEMhiQEgx
 github.com/leodido/go-urn v1.2.1/go.mod h1:zt4jvISO2HfUBqxjfIshjdMTYS56ZS/qv49ictyFfxY=
 github.com/luraproject/lura/v2 v2.0.0-dev h1:5QLEEUtIZ83QiC+kU2iP0oJ7XvHn9HGc/m0mouQlmFE=
 github.com/luraproject/lura/v2 v2.0.0-dev/go.mod h1:OqrMGe6pOC526IlGWLfhLjjRPyc8vRATXZYih9EbEZs=
+github.com/luraproject/lura/v2 v2.0.0 h1:nfIr4a8XLMECaPQBpGSWxXhNAya7JQwGa3kzLRy5z14=
+github.com/luraproject/lura/v2 v2.0.0/go.mod h1:1FhL+5a9uH6o7zMNstXlcjznL5yt2lZ9Q8efanmvw9w=
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
 github.com/mattn/go-isatty v0.0.14/go.mod h1:7GGIvUiUoEMVVmxf/4nioHXj79iQHKdU27kJ6hsGG94=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
