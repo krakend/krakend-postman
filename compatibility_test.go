@@ -13,6 +13,7 @@ func ExampleParse() {
 	c := Parse(config.ServiceConfig{
 		Port: 8080,
 		Name: "sample",
+		TLS:  &config.TLS{},
 		Endpoints: []*config.EndpointConfig{
 			{
 				Endpoint: "/foo",
@@ -27,8 +28,12 @@ func ExampleParse() {
 	fmt.Println(c.Info.Name)
 	fmt.Println(c.Info.Schema)
 	fmt.Println(len(c.Item))
-	fmt.Printf("%+v\n", c.Item[0])
-	fmt.Printf("%+v\n", c.Item[1])
+	fmt.Printf("%+v\n", c.Item[0].Name)
+	fmt.Printf("%+v\n", c.Item[0].Item)
+	fmt.Printf("%+v\n", c.Item[0].Request.URL.Raw)
+	fmt.Printf("%+v\n", c.Item[1].Name)
+	fmt.Printf("%+v\n", c.Item[1].Item)
+	fmt.Printf("%+v\n", c.Item[1].Request.URL.Raw)
 	fmt.Println(len(c.Variables))
 	fmt.Printf("%+v\n", c.Variables[0].Key)
 	fmt.Printf("%+v\n", c.Variables[0].Value)
@@ -40,14 +45,18 @@ func ExampleParse() {
 	// sample
 	// https://schema.getpostman.com/json/collection/v2.1.0/collection.json
 	// 2
-	// {Name:/foo Request:{URL:{Raw:{{SCHEMA}}://{{HOST}}/foo Protocol:{{SCHEMA}} Host:[{{HOST}}] Path:[foo]} Method:GET Header:[] Body:<nil> Description:}}
-	// {Name:/bar Request:{URL:{Raw:{{SCHEMA}}://{{HOST}}/bar Protocol:{{SCHEMA}} Host:[{{HOST}}] Path:[bar]} Method:POST Header:[] Body:<nil> Description:}}
+	// /foo
+	// []
+	// {{SCHEMA}}://{{HOST}}/foo
+	// /bar
+	// []
+	// {{SCHEMA}}://{{HOST}}/bar
 	// 2
 	// HOST
 	// localhost:8080
 	// string
 	// SCHEMA
-	// http
+	// https
 	// string
 }
 
@@ -80,7 +89,9 @@ func ExampleHandleCollection() {
 	fmt.Println(c.Info.Name)
 	fmt.Println(c.Info.Schema)
 	fmt.Println(len(c.Item))
-	fmt.Printf("%+v\n", c.Item[0])
+	fmt.Printf("%+v\n", c.Item[0].Name)
+	fmt.Printf("%+v\n", c.Item[0].Item)
+	fmt.Printf("%+v\n", c.Item[0].Request.URL.Raw)
 	fmt.Println(len(c.Variables))
 	fmt.Printf("%+v\n", c.Variables[0].Key)
 	fmt.Printf("%+v\n", c.Variables[0].Value)
@@ -93,7 +104,9 @@ func ExampleHandleCollection() {
 	// sample
 	// https://schema.getpostman.com/json/collection/v2.1.0/collection.json
 	// 1
-	// {Name:/foo Request:{URL:{Raw:{{SCHEMA}}://{{HOST}}/foo Protocol:{{SCHEMA}} Host:[{{HOST}}] Path:[foo]} Method:GET Header:[] Body:<nil> Description:}}
+	// /foo
+	// []
+	// {{SCHEMA}}://{{HOST}}/foo
 	// 2
 	// HOST
 	// localhost:8080
