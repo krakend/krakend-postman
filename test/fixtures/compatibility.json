@@ -1,0 +1,28 @@
+{
+
+    "$schema": "https://www.krakend.io/schema/v2.7/krakend.json",
+    "version": 3,
+    "port": 8080,
+    "name": "sample",
+    "endpoints": [
+        {
+            "endpoint": "/foo",
+            "method": "GET",
+            "backend": [
+                {
+                    "url_pattern": "/foo"
+                }
+            ]
+        },
+        {
+            "endpoint": "/bar",
+            "method": "GET",
+            "backend": [
+                {
+                    "url_pattern": "/bar"
+                }
+            ]
+        }
+    ]
+}
+

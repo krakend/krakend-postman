@@ -1,6 +1,7 @@
 package postman
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -12,7 +13,7 @@ import (
 
 const (
 	Namespace          = "documentation/postman"
-	DefaultDescription = "Collection parsed at %s"
+	DefaultDescription = "Collection parsed from KrakenD config"
 	PostmanJsonSchema  = "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 )
 
@@ -31,6 +32,7 @@ func HandleCollection(c Collection) func(http.ResponseWriter, *http.Request) {
 }
 
 // Parse converts the received service config into a simple POSTMAN collection description
+// @see https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html
 func Parse(cfg config.ServiceConfig) Collection {
 	serviceOpts, err := ParseServiceOptions(&cfg)
 	if err != nil {
@@ -40,7 +42,7 @@ func Parse(cfg config.ServiceConfig) Collection {
 	c := Collection{
 		Info: Info{
 			Name:        serviceOpts.Name,
-			PostmanID:   "fixed",
+			PostmanID:   Hash(serviceOpts.Name),
 			Description: serviceOpts.Description,
 			Schema:      PostmanJsonSchema,
 		},
@@ -48,7 +50,7 @@ func Parse(cfg config.ServiceConfig) Collection {
 		Variables: ParseVariables(&cfg),
 	}
 	if v, err := ParseVersion(serviceOpts); err == nil {
-		c.Info.Version = *v
+		c.Info.Version = v
 	}
 
 	// Iterate the endpoint list and generate a map of paths
@@ -126,7 +128,7 @@ func Parse(cfg config.ServiceConfig) Collection {
 		if opts.Description != "" {
 			item.Request.Description = opts.Description
 		}
-		if opts.Folder != "" {
+		if opts.Folder != "" && opts.Folder != "/" {
 			node := c.Item.FindByPath(opts.Folder)
 			node.Item = append(node.Item, item)
 		} else {
@@ -137,6 +139,10 @@ func Parse(cfg config.ServiceConfig) Collection {
 	return c
 }
 
+func Hash(input string) string {
+	return fmt.Sprintf("%x", sha256.Sum224([]byte(input)))
+}
+
 type Collection struct {
 	Variables []Variable `json:"variables"`
 	Info      Info       `json:"info"`
@@ -144,11 +150,11 @@ type Collection struct {
 }
 
 type Info struct {
-	Name        string  `json:"name"`
-	PostmanID   string  `json:"_postman_id"`
-	Description string  `json:"description,omitempty"`
-	Schema      string  `json:"schema"`
-	Version     Version `json:"version,omitempty"`
+	Name        string   `json:"name"`
+	PostmanID   string   `json:"_postman_id"`
+	Description string   `json:"description,omitempty"`
+	Schema      string   `json:"schema"`
+	Version     *Version `json:"version,omitempty"`
 }
 
 type Request struct {

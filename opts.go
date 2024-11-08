@@ -4,17 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/Masterminds/semver/v3"
-	"github.com/go-contrib/uuid"
 	"github.com/luraproject/lura/v2/config"
 )
 
 func ParseServiceOptions(serviceConfig *config.ServiceConfig) (*ServiceOptions, error) {
 	opts := &ServiceOptions{
 		Name:        serviceConfig.Name,
-		Description: fmt.Sprintf(DefaultDescription, time.Now().String()),
+		Description: DefaultDescription,
 	}
 
 	raw, ok := serviceConfig.ExtraConfig[Namespace].(map[string]interface{})
@@ -92,13 +90,13 @@ func ParseVariables(cfg *config.ServiceConfig) []Variable {
 	}
 	return []Variable{
 		{
-			ID:    uuid.NewV4().String(),
+			ID:    Hash("HOST"),
 			Key:   "HOST",
 			Type:  "string",
 			Value: fmt.Sprintf("%s:%d", address, cfg.Port),
 		},
 		{
-			ID:    uuid.NewV4().String(),
+			ID:    Hash("SCHEMA"),
 			Key:   "SCHEMA",
 			Type:  "string",
 			Value: schema,

@@ -1,0 +1,163 @@
+{
+    "$schema": "https://www.krakend.io/schema/v2.7/krakend.json",
+    "version": 3,
+    "port": 8080,
+    "name": "KrakenD configuration at MyCompany",
+    "extra_config": {
+        "documentation/postman": {
+            "folder": [
+                {
+                    "name": "/Users",
+                    "description": "User endpoints"
+                },
+                {
+                    "name": "/Users/Assets",
+                    "description": "User assets endpoints"
+                },
+                {
+                    "name": "/Books",
+                    "description": "Books endpoints"
+                }
+            ]
+        }
+    },
+    "endpoints": [
+        {
+            "endpoint": "/users",
+            "method": "GET",
+            "backend": [
+                {
+                    "url_pattern": "/list-users"
+                }
+            ],
+            "extra_config": {
+                "documentation/postman": {
+                    "name": "List users",
+                    "folder": "/Users"
+                }
+            }
+        },
+        {
+            "endpoint": "/users/{id}",
+            "method": "GET",
+            "backend": [
+                {
+                    "url_pattern": "/get-user?id={id}"
+                }
+            ],
+            "extra_config": {
+                "documentation/postman": {
+                    "name": "Get user details",
+                    "folder": "/Users"
+                }
+            }
+        },
+        {
+            "endpoint": "/users/{id}",
+            "method": "DELETE",
+            "backend": [
+                {
+                    "url_pattern": "/delete-user?id={id}"
+                }
+            ],
+            "extra_config": {
+                "documentation/postman": {
+                    "name": "Delete user",
+                    "folder": "/Users"
+                }
+            }
+        },
+        {
+            "endpoint": "/users/{id}",
+            "method": "PATCH",
+            "backend": [
+                {
+                    "url_pattern": "/update-user?id={id}"
+                }
+            ],
+            "extra_config": {
+                "documentation/postman": {
+                    "name": "Update user",
+                    "folder": "/Users"
+                }
+            }
+        },
+        {
+            "endpoint": "/users",
+            "method": "POST",
+            "backend": [
+                {
+                    "url_pattern": "/add-user"
+                }
+            ],
+            "extra_config": {
+                "documentation/postman": {
+                    "name": "Create new user",
+                    "folder": "/Users"
+                }
+            }
+        },
+        {
+            "endpoint": "/books",
+            "method": "GET",
+            "backend": [
+                {
+                    "url_pattern": "/list-books"
+                }
+            ],
+            "extra_config": {
+                "documentation/postman": {
+                    "name": "List all books",
+                    "folder": "/Books"
+                }
+            }
+        },
+        {
+            "endpoint": "/books",
+            "method": "POST",
+            "backend": [
+                {
+                    "url_pattern": "/create-book"
+                }
+            ],
+            "extra_config": {
+                "documentation/postman": {
+                    "name": "Create book",
+                    "folder": "/Books"
+                }
+            }
+        },
+        {
+            "endpoint": "/users/{id}/books",
+            "method": "GET",
+            "backend": [
+                {
+                    "url_pattern": "/list-user-books?id={id}"
+                }
+            ],
+            "extra_config": {
+                "documentation/postman": {
+                    "name": "List user books",
+                    "folder": "/Users/Assets"
+                }
+            }
+        },
+        {
+            "endpoint": "/users/{id}/book/{bookId}",
+            "method": "DELETE",
+            "backend": [
+                {
+                    "url_pattern": "/delete-user-book?id={id}&bid={bookId}"
+                }
+            ],
+            "extra_config": {
+                "documentation/postman": {
+                    "name": "Delete user book ownership",
+                    "description": "Removes the association of a user with a book",
+                    "folder": "/Users/Assets"
+                }
+            }
+        }
+    ]
+}
+

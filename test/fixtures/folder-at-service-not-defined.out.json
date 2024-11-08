@@ -1,0 +1,45 @@
+{
+	"variables": [
+		{
+			"id": "29e2a390ef5cc9ff41ef64ac4dd04716e79e9a9c64157a4acf3a6046",
+			"key": "HOST",
+			"value": "localhost:8080",
+			"type": "string"
+		},
+		{
+			"id": "4cd375bbd0f6579408d9b098c3d7578a45183bbf77619ad5ee7cef9e",
+			"key": "SCHEMA",
+			"value": "http",
+			"type": "string"
+		}
+	],
+	"info": {
+		"name": "KrakenD configuration at MyCompany",
+		"_postman_id": "935fdd0a0c924756c31fa17b6740ecb205ffcc8d539b90d5dac5e238",
+		"description": "Collection parsed from KrakenD config",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List users",
+					"request": {
+						"url": {
+							"raw": "{{SCHEMA}}://{{HOST}}/users",
+							"protocol": "{{SCHEMA}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"method": "GET"
+					}
+				}
+			]
+		}
+	]
+}
