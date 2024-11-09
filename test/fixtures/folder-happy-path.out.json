@@ -21,86 +21,9 @@
 	},
 	"item": [
 		{
-			"name": "Books",
-			"description": "Books endpoints",
-			"item": [
-				{
-					"name": "List all books",
-					"request": {
-						"url": {
-							"raw": "{{SCHEMA}}://{{HOST}}/books",
-							"protocol": "{{SCHEMA}}",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"books"
-							]
-						},
-						"method": "GET"
-					}
-				},
-				{
-					"name": "Create book",
-					"request": {
-						"url": {
-							"raw": "{{SCHEMA}}://{{HOST}}/books",
-							"protocol": "{{SCHEMA}}",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"books"
-							]
-						},
-						"method": "POST"
-					}
-				}
-			]
-		},
-		{
 			"name": "Users",
 			"description": "User endpoints",
 			"item": [
-				{
-					"name": "Assets",
-					"description": "User assets endpoints",
-					"item": [
-						{
-							"name": "List user books",
-							"request": {
-								"url": {
-									"raw": "{{SCHEMA}}://{{HOST}}/users/:id/books",
-									"protocol": "{{SCHEMA}}",
-									"host": [
-										"{{HOST}}"
-									],
-									"path": [
-										"users/:id/books"
-									]
-								},
-								"method": "GET"
-							}
-						},
-						{
-							"name": "Delete user book ownership",
-							"request": {
-								"url": {
-									"raw": "{{SCHEMA}}://{{HOST}}/users/:id/book/:bookId",
-									"protocol": "{{SCHEMA}}",
-									"host": [
-										"{{HOST}}"
-									],
-									"path": [
-										"users/:id/book/:bookId"
-									]
-								},
-								"method": "DELETE",
-								"description": "Removes the association of a user with a book"
-							}
-						}
-					]
-				},
 				{
 					"name": "List users",
 					"request": {
@@ -176,6 +99,83 @@
 							],
 							"path": [
 								"users"
+							]
+						},
+						"method": "POST"
+					}
+				},
+				{
+					"name": "Assets",
+					"description": "User assets endpoints",
+					"item": [
+						{
+							"name": "List user books",
+							"request": {
+								"url": {
+									"raw": "{{SCHEMA}}://{{HOST}}/users/:id/books",
+									"protocol": "{{SCHEMA}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"users/:id/books"
+									]
+								},
+								"method": "GET"
+							}
+						},
+						{
+							"name": "Delete user book ownership",
+							"request": {
+								"url": {
+									"raw": "{{SCHEMA}}://{{HOST}}/users/:id/book/:bookId",
+									"protocol": "{{SCHEMA}}",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"users/:id/book/:bookId"
+									]
+								},
+								"method": "DELETE",
+								"description": "Removes the association of a user with a book"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Books",
+			"description": "Books endpoints",
+			"item": [
+				{
+					"name": "List all books",
+					"request": {
+						"url": {
+							"raw": "{{SCHEMA}}://{{HOST}}/books",
+							"protocol": "{{SCHEMA}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"books"
+							]
+						},
+						"method": "GET"
+					}
+				},
+				{
+					"name": "Create book",
+					"request": {
+						"url": {
+							"raw": "{{SCHEMA}}://{{HOST}}/books",
+							"protocol": "{{SCHEMA}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"books"
 							]
 						},
 						"method": "POST"

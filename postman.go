@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"slices"
-	"sort"
 
 	"github.com/luraproject/lura/v2/config"
 )
@@ -46,62 +44,13 @@ func Parse(cfg config.ServiceConfig) Collection {
 			Description: serviceOpts.Description,
 			Schema:      PostmanJsonSchema,
 		},
-		Item:      Branch{},
+		Item:      ItemList{},
 		Variables: ParseVariables(&cfg),
 	}
 	if v, err := ParseVersion(serviceOpts); err == nil {
 		c.Info.Version = v
 	}
 
-	// Iterate the endpoint list and generate a map of paths
-	var flattenPathsKeys []string
-	flattenPaths := map[string][]string{}
-	for _, e := range cfg.Endpoints {
-		opts, err := ParseEndpointOptions(e)
-		if err != nil {
-			continue
-		}
-
-		flattenPaths[opts.Folder] = SlicePath(opts.Folder)
-		flattenPathsKeys = append(flattenPathsKeys, opts.Folder)
-	}
-
-	sort.Strings(flattenPathsKeys)
-	flattenPathsKeys = slices.Compact(flattenPathsKeys)
-
-	// Now we build a first version of the tree based on the paths provided in the endpoint list
-	// The folders are enriched with the provided service configuration
-	for _, rawPath := range flattenPathsKeys {
-		slicedPath := flattenPaths[rawPath]
-		if len(slicedPath) == 0 {
-			continue
-		}
-
-		branch := c.Item.FindItem(slicedPath[0])
-		if branch == nil {
-			branch = NewItem(slicedPath[0])
-			folderOpts := FindFolderOptions(serviceOpts, rawPath)
-			if folderOpts != nil {
-				branch.Description = folderOpts.Description
-			}
-			c.Item = append(c.Item, branch)
-		}
-
-		for _, value := range slicedPath[1:] {
-			child := branch.FindChild(value)
-			if child == nil {
-				child = NewItem(value)
-				folderOpts := FindFolderOptions(serviceOpts, rawPath)
-				if folderOpts != nil {
-					child.Description = folderOpts.Description
-				}
-				branch.Item = append(branch.Item, child)
-			}
-			branch = child
-		}
-	}
-
-	// The folder tree is now in place, let's traverse it to add the endpoints
 	for _, e := range cfg.Endpoints {
 		item := NewItem(e.Endpoint)
 		item.Request = &Request{
@@ -128,9 +77,14 @@ func Parse(cfg config.ServiceConfig) Collection {
 		if opts.Description != "" {
 			item.Request.Description = opts.Description
 		}
+
+		var folder *Item
 		if opts.Folder != "" && opts.Folder != "/" {
-			node := c.Item.FindByPath(opts.Folder)
-			node.Item = append(node.Item, item)
+			folder = CreateFolder(&c.Item, opts.Folder, serviceOpts)
+		}
+
+		if folder != nil {
+			folder.Item = append(folder.Item, item)
 		} else {
 			c.Item = append(c.Item, item)
 		}
@@ -146,7 +100,7 @@ func Hash(input string) string {
 type Collection struct {
 	Variables []Variable `json:"variables"`
 	Info      Info       `json:"info"`
-	Item      Branch     `json:"item"`
+	Item      ItemList   `json:"item"`
 }
 
 type Info struct {
