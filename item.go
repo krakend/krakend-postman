@@ -25,7 +25,7 @@ func NewItem(name string) *Item {
 	}
 }
 
-func CreateFolder(itemList *ItemList, path string, serviceOpts *ServiceOptions) *Item {
+func CreateFolder(itemList *ItemList, path string, folderOpts *FolderOptions) *Item {
 	slicedPath := SlicePath(path)
 	if len(slicedPath) == 0 {
 		return nil
@@ -34,7 +34,6 @@ func CreateFolder(itemList *ItemList, path string, serviceOpts *ServiceOptions) 
 	root := itemList.FindItem(slicedPath[0])
 	if root == nil {
 		root = NewItem(slicedPath[0])
-		folderOpts := FindFolderOptions(serviceOpts, path)
 		if folderOpts != nil {
 			root.Description = folderOpts.Description
 		}
@@ -45,7 +44,6 @@ func CreateFolder(itemList *ItemList, path string, serviceOpts *ServiceOptions) 
 		child := root.Item.FindItem(value)
 		if child == nil {
 			child = NewItem(value)
-			folderOpts := FindFolderOptions(serviceOpts, path)
 			if folderOpts != nil {
 				child.Description = folderOpts.Description
 			}

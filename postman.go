@@ -80,7 +80,7 @@ func Parse(cfg config.ServiceConfig) Collection {
 
 		var folder *Item
 		if opts.Folder != "" && opts.Folder != "/" {
-			folder = CreateFolder(&c.Item, opts.Folder, serviceOpts)
+			folder = CreateFolder(&c.Item, opts.Folder, FindFolderOptions(serviceOpts, opts.Folder))
 		}
 
 		if folder != nil {
