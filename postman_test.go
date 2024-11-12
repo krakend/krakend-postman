@@ -97,7 +97,6 @@ func TestParse(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			t.Parallel()
 			cfg, err := parseCfg(test.in)
 			if err != nil {
 				t.Error(err)

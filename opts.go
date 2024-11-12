@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net"
+	"strconv"
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/luraproject/lura/v2/config"
@@ -93,7 +95,7 @@ func ParseVariables(cfg *config.ServiceConfig) []Variable {
 			ID:    Hash("HOST"),
 			Key:   "HOST",
 			Type:  "string",
-			Value: fmt.Sprintf("%s:%d", address, cfg.Port),
+			Value: net.JoinHostPort(address, strconv.Itoa(cfg.Port)),
 		},
 		{
 			ID:    Hash("SCHEMA"),

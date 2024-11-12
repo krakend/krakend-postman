@@ -38,8 +38,6 @@ func TestSlicePath(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			t.Parallel()
-
 			o := SlicePath(test.in)
 			if !slices.Equal(o, test.out) {
 				t.Errorf("unexpected output in %s:\n[GOT]\n%+v\n\n[EXPECTED]\n%+v", name, o, test.out)
