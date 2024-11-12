@@ -19,11 +19,11 @@ const (
 func HandleCollection(c Collection) func(http.ResponseWriter, *http.Request) {
 	b, err := json.Marshal(c)
 	if err != nil {
-		return func(rw http.ResponseWriter, r *http.Request) {
+		return func(rw http.ResponseWriter, _ *http.Request) {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 		}
 	}
-	return func(rw http.ResponseWriter, r *http.Request) {
+	return func(rw http.ResponseWriter, _ *http.Request) {
 		rw.Header().Add("Content-Type", "application/json")
 		rw.Write(b)
 	}
