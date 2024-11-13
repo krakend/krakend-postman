@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	Namespace          = "documentation/postman"
-	DefaultDescription = "Collection parsed from KrakenD config"
-	PostmanJsonSchema  = "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	namespace          = "documentation/postman"
+	defaultDescription = "Collection parsed from KrakenD config"
+	postmanJsonSchema  = "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 )
 
 // HandleCollection returns a simple http.HandleFunc exposing the POSTMAN collection description
@@ -32,7 +32,7 @@ func HandleCollection(c Collection) func(http.ResponseWriter, *http.Request) {
 // Parse converts the received service config into a simple POSTMAN collection description
 // @see https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html
 func Parse(cfg config.ServiceConfig) Collection {
-	serviceOpts, err := ParseServiceOptions(&cfg)
+	serviceOpts, err := parseServiceOptions(&cfg)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -40,20 +40,20 @@ func Parse(cfg config.ServiceConfig) Collection {
 	c := Collection{
 		Info: Info{
 			Name:        serviceOpts.Name,
-			PostmanID:   Hash(serviceOpts.Name),
+			PostmanID:   hash(serviceOpts.Name),
 			Description: serviceOpts.Description,
-			Schema:      PostmanJsonSchema,
+			Schema:      postmanJsonSchema,
 		},
-		Item:      ItemList{},
-		Variables: ParseVariables(&cfg),
+		Item:      itemList{},
+		Variables: parseVariables(&cfg),
 	}
-	if v, err := ParseVersion(serviceOpts); err == nil {
+	if v, err := parseVersion(serviceOpts); err == nil {
 		c.Info.Version = v
 	}
 
 	for _, e := range cfg.Endpoints {
-		item := NewItem(e.Endpoint)
-		item.Request = &Request{
+		entry := newItem(e.Endpoint)
+		entry.Request = &Request{
 			URL: URL{
 				Raw:      "{{SCHEMA}}://{{HOST}}" + e.Endpoint,
 				Protocol: "{{SCHEMA}}",
@@ -65,42 +65,42 @@ func Parse(cfg config.ServiceConfig) Collection {
 
 		// The endpoints that do not have options are added to the root of the collection
 		// This simple check handles the backwards compatibility of the generator
-		opts, err := ParseEndpointOptions(e)
+		opts, err := parseEndpointOptions(e)
 		if err != nil {
-			c.Item = append(c.Item, item)
+			c.Item = append(c.Item, entry)
 			continue
 		}
 
 		if opts.Name != "" {
-			item.Name = opts.Name
+			entry.Name = opts.Name
 		}
 		if opts.Description != "" {
-			item.Request.Description = opts.Description
+			entry.Request.Description = opts.Description
 		}
 
 		var folder *Item
-		if opts.Folder != "" && opts.Folder != "/" {
-			folder = CreateFolder(&c.Item, opts.Folder, FindFolderOptions(serviceOpts, opts.Folder))
+		if opts.Folder != "" && opts.Folder != separator {
+			folder = createFolder(&c.Item, opts.Folder, findFolderOptions(serviceOpts, opts.Folder))
 		}
 
 		if folder != nil {
-			folder.Item = append(folder.Item, item)
+			folder.Item = append(folder.Item, entry)
 		} else {
-			c.Item = append(c.Item, item)
+			c.Item = append(c.Item, entry)
 		}
 	}
 
 	return c
 }
 
-func Hash(input string) string {
+func hash(input string) string {
 	return fmt.Sprintf("%x", sha256.Sum224([]byte(input)))
 }
 
 type Collection struct {
 	Variables []Variable `json:"variables"`
 	Info      Info       `json:"info"`
-	Item      ItemList   `json:"item"`
+	Item      itemList   `json:"item"`
 }
 
 type Info struct {

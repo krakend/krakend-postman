@@ -34,11 +34,15 @@ func TestSlicePath(t *testing.T) {
 			in:  "/A1/B with spaces/.hidden/_/-&",
 			out: []string{"A1", "B with spaces", ".hidden", "_", "-&"},
 		},
+		"Not a filesystem path, dots do not have special treatment": {
+			in:  "../../A/B/",
+			out: []string{"..", "..", "A", "B"},
+		},
 	}
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			o := SlicePath(test.in)
+			o := slicePath(test.in)
 			if !slices.Equal(o, test.out) {
 				t.Errorf("unexpected output in %s:\n[GOT]\n%+v\n\n[EXPECTED]\n%+v", name, o, test.out)
 			}

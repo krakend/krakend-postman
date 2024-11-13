@@ -1,21 +1,18 @@
 package postman
 
 import (
-	"fmt"
-	"regexp"
+	"strings"
 )
 
 const separator = "/"
 
-var fre = regexp.MustCompile(fmt.Sprintf(`%s+([^%s]+)`, separator, separator))
-
-func SlicePath(path string) []string {
-	matches := fre.FindAllStringSubmatch(path, -1)
-
+func slicePath(path string) []string {
 	var paths []string
-	for _, m := range matches {
-		paths = append(paths, m[1])
+	for _, p := range strings.Split(path, separator) {
+		clean := strings.Trim(p, " ")
+		if len(clean) > 0 {
+			paths = append(paths, p)
+		}
 	}
-
 	return paths
 }

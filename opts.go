@@ -11,13 +11,13 @@ import (
 	"github.com/luraproject/lura/v2/config"
 )
 
-func ParseServiceOptions(serviceConfig *config.ServiceConfig) (*ServiceOptions, error) {
-	opts := &ServiceOptions{
+func parseServiceOptions(serviceConfig *config.ServiceConfig) (*serviceOptions, error) {
+	opts := &serviceOptions{
 		Name:        serviceConfig.Name,
-		Description: DefaultDescription,
+		Description: defaultDescription,
 	}
 
-	raw, ok := serviceConfig.ExtraConfig[Namespace].(map[string]interface{})
+	raw, ok := serviceConfig.ExtraConfig[namespace].(map[string]interface{})
 	if !ok {
 		// Backwards compatibility: there's no specific service config, we should proceed without problems
 		return opts, nil
@@ -35,7 +35,7 @@ func ParseServiceOptions(serviceConfig *config.ServiceConfig) (*ServiceOptions, 
 	return opts, nil
 }
 
-func FindFolderOptions(serviceOpts *ServiceOptions, name string) *FolderOptions {
+func findFolderOptions(serviceOpts *serviceOptions, name string) *folderOptions {
 	for _, f := range serviceOpts.Folder {
 		if f.Name == name {
 			return &f
@@ -44,10 +44,10 @@ func FindFolderOptions(serviceOpts *ServiceOptions, name string) *FolderOptions 
 	return nil
 }
 
-func ParseEndpointOptions(endpointConfig *config.EndpointConfig) (*EndpointOptions, error) {
-	opts := &EndpointOptions{}
+func parseEndpointOptions(endpointConfig *config.EndpointConfig) (*endpointOptions, error) {
+	opts := &endpointOptions{}
 
-	endpointCfg, ok := endpointConfig.ExtraConfig[Namespace].(map[string]interface{})
+	endpointCfg, ok := endpointConfig.ExtraConfig[namespace].(map[string]interface{})
 	if !ok {
 		return nil, errors.New("ignored")
 	}
@@ -63,7 +63,7 @@ func ParseEndpointOptions(endpointConfig *config.EndpointConfig) (*EndpointOptio
 	return opts, nil
 }
 
-func ParseVersion(serviceOpts *ServiceOptions) (*Version, error) {
+func parseVersion(serviceOpts *serviceOptions) (*Version, error) {
 	if serviceOpts.Version == "" {
 		return nil, errors.New("ignored")
 	}
@@ -81,7 +81,7 @@ func ParseVersion(serviceOpts *ServiceOptions) (*Version, error) {
 	return version, nil
 }
 
-func ParseVariables(cfg *config.ServiceConfig) []Variable {
+func parseVariables(cfg *config.ServiceConfig) []Variable {
 	address := "localhost"
 	if cfg.Address != "" {
 		address = cfg.Address
@@ -92,13 +92,13 @@ func ParseVariables(cfg *config.ServiceConfig) []Variable {
 	}
 	return []Variable{
 		{
-			ID:    Hash("HOST"),
+			ID:    hash("HOST"),
 			Key:   "HOST",
 			Type:  "string",
 			Value: net.JoinHostPort(address, strconv.Itoa(cfg.Port)),
 		},
 		{
-			ID:    Hash("SCHEMA"),
+			ID:    hash("SCHEMA"),
 			Key:   "SCHEMA",
 			Type:  "string",
 			Value: schema,
@@ -106,19 +106,19 @@ func ParseVariables(cfg *config.ServiceConfig) []Variable {
 	}
 }
 
-type ServiceOptions struct {
+type serviceOptions struct {
 	Name        string          `json:"name,omitempty"`
 	Description string          `json:"description,omitempty"`
 	Version     string          `json:"version,omitempty"`
-	Folder      []FolderOptions `json:"folder,omitempty"`
+	Folder      []folderOptions `json:"folder,omitempty"`
 }
 
-type FolderOptions struct {
+type folderOptions struct {
 	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
 }
 
-type EndpointOptions struct {
-	FolderOptions
+type endpointOptions struct {
+	folderOptions
 	Folder string `json:"folder,omitempty"`
 }
