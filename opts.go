@@ -11,6 +11,13 @@ import (
 	"github.com/luraproject/lura/v2/config"
 )
 
+var (
+	errInvalidServiceConfig  = errors.New("invalid service config")
+	errMissingEndpointConfig = errors.New("missing endpoint config")
+	errMissingVersion        = errors.New("missing version config")
+	errInvalidSemver         = errors.New("the provided version is not in semver format")
+)
+
 func parseServiceOptions(serviceConfig *config.ServiceConfig) (*serviceOptions, error) {
 	opts := &serviceOptions{
 		Name:        serviceConfig.Name,
@@ -25,11 +32,11 @@ func parseServiceOptions(serviceConfig *config.ServiceConfig) (*serviceOptions, 
 
 	tmp, err := json.Marshal(raw)
 	if err != nil {
-		return nil, errors.New("invalid service config")
+		return nil, errInvalidServiceConfig
 	}
 
 	if err := json.Unmarshal(tmp, opts); err != nil {
-		return nil, errors.New("invalid service config")
+		return nil, errInvalidServiceConfig
 	}
 
 	return opts, nil
@@ -49,7 +56,7 @@ func parseEndpointOptions(endpointConfig *config.EndpointConfig) (*endpointOptio
 
 	endpointCfg, ok := endpointConfig.ExtraConfig[namespace].(map[string]interface{})
 	if !ok {
-		return nil, errors.New("ignored")
+		return nil, errMissingEndpointConfig
 	}
 
 	tmp, err := json.Marshal(endpointCfg)
@@ -65,12 +72,12 @@ func parseEndpointOptions(endpointConfig *config.EndpointConfig) (*endpointOptio
 
 func parseVersion(serviceOpts *serviceOptions) (*Version, error) {
 	if serviceOpts.Version == "" {
-		return nil, errors.New("ignored")
+		return nil, errMissingVersion
 	}
 
 	v, err := semver.NewVersion(serviceOpts.Version)
 	if err != nil {
-		return nil, errors.New("the provided version is not in semver format")
+		return nil, errInvalidSemver
 	}
 
 	version := &Version{

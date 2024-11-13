@@ -29,12 +29,10 @@ func HandleCollection(c Collection) func(http.ResponseWriter, *http.Request) {
 	}
 }
 
-// Parse converts the received service config into a simple POSTMAN collection description
-// @see https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html
-func Parse(cfg config.ServiceConfig) Collection {
+func MustParse(cfg config.ServiceConfig) (Collection, error) {
 	serviceOpts, err := parseServiceOptions(&cfg)
 	if err != nil {
-		fmt.Println(err.Error())
+		return Collection{}, err
 	}
 
 	c := Collection{
@@ -47,9 +45,11 @@ func Parse(cfg config.ServiceConfig) Collection {
 		Item:      itemList{},
 		Variables: parseVariables(&cfg),
 	}
-	if v, err := parseVersion(serviceOpts); err == nil {
-		c.Info.Version = v
+	v, err := parseVersion(serviceOpts)
+	if err == errInvalidSemver {
+		return Collection{}, err
 	}
+	c.Info.Version = v
 
 	for _, e := range cfg.Endpoints {
 		entry := newItem(e.Endpoint)
@@ -66,9 +66,11 @@ func Parse(cfg config.ServiceConfig) Collection {
 		// The endpoints that do not have options are added to the root of the collection
 		// This simple check handles the backwards compatibility of the generator
 		opts, err := parseEndpointOptions(e)
-		if err != nil {
+		if err == errMissingEndpointConfig {
 			c.Item = append(c.Item, entry)
 			continue
+		} else if err != nil {
+			return Collection{}, err
 		}
 
 		if opts.Name != "" {
@@ -90,7 +92,17 @@ func Parse(cfg config.ServiceConfig) Collection {
 		}
 	}
 
-	return c
+	return c, nil
+}
+
+// Parse converts the received service config into a simple POSTMAN collection description
+// @see https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html
+func Parse(cfg config.ServiceConfig) Collection {
+	collection, err := MustParse(cfg)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	return collection
 }
 
 func hash(input string) string {

@@ -14,6 +14,10 @@ func TestSlicePath(t *testing.T) {
 			in:  "/",
 			out: []string{},
 		},
+		"Does not start with separator": {
+			in:  "A/B",
+			out: []string{"A", "B"},
+		},
 		"Single element": {
 			in:  "/A",
 			out: []string{"A"},

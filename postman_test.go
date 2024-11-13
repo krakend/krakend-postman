@@ -68,6 +68,51 @@ func ExampleHandleCollection() {
 	// string
 }
 
+func ExampleParseError() {
+	invalidVersion := config.ServiceConfig{
+		Port: 8080,
+		Name: "sample",
+		ExtraConfig: map[string]interface{}{
+			namespace: map[string]interface{}{
+				"version": "meh",
+			},
+		},
+	}
+	invalidServiceConfig := config.ServiceConfig{
+		Port: 8080,
+		Name: "sample",
+		ExtraConfig: map[string]interface{}{
+			namespace: map[string]interface{}{
+				"description": 100,
+			},
+		},
+	}
+	invalidEndpointConfig := config.ServiceConfig{
+		Port: 8080,
+		Name: "sample",
+		Endpoints: []*config.EndpointConfig{
+			{
+				Endpoint: "/foo",
+				Method:   "GET",
+				ExtraConfig: map[string]interface{}{
+					namespace: map[string]interface{}{
+						"folder": 1,
+					},
+				},
+			},
+		},
+	}
+
+	Parse(invalidVersion)
+	Parse(invalidServiceConfig)
+	Parse(invalidEndpointConfig)
+
+	// output:
+	// the provided version is not in semver format
+	// invalid service config
+	// invalid endpoint config: GET /foo
+}
+
 func TestParse(t *testing.T) {
 	tests := map[string]struct {
 		in  string
