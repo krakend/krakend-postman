@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 
-	postman "github.com/krakendio/krakend-postman/v2"
+	postman "github.com/krakendio/krakend-postman/v3"
 	"github.com/luraproject/lura/v2/config"
 )
 
