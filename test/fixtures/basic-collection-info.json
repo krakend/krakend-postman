@@ -1,0 +1,40 @@
+{
+    "$schema": "https://www.krakend.io/schema/v2.7/krakend.json",
+    "version": 3,
+    "port": 8080,
+    "name": "KrakenD configuration at MyCompany",
+    "listen_ip": "172.12.1.1",
+    "tls": {
+        "keys": [
+            {}
+        ]
+    },
+    "extra_config": {
+        "documentation/postman": {
+            "name": "Overwritten collection name",
+            "description": "This is a **sample** server. You can find out more about at [http://blah](http://blah.blah.com) webpage",
+            "version": "0.3.1-beta"
+        }
+    },
+    "endpoints": [
+        {
+            "endpoint": "/foo",
+            "method": "GET",
+            "backend": [
+                {
+                    "url_pattern": "/foo"
+                }
+            ]
+        },
+        {
+            "endpoint": "/bar",
+            "method": "GET",
+            "backend": [
+                {
+                    "url_pattern": "/bar"
+                }
+            ]
+        }
+    ]
+}
+

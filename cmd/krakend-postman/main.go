@@ -17,7 +17,11 @@ func main() {
 		fmt.Println("error parsing the config file:", err.Error())
 		return
 	}
-	b, err := json.MarshalIndent(postman.Parse(cfg), "", "\t")
+	c, parseError := postman.Parse(cfg)
+	if parseError != nil {
+		fmt.Println("error parsing the collection: ", parseError.Error())
+	}
+	b, err := json.MarshalIndent(c, "", "\t")
 	if err != nil {
 		fmt.Println("error marshaling the postma descriptor:", err.Error())
 		return

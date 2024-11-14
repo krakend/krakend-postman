@@ -1,0 +1,23 @@
+{
+    "$schema": "https://www.krakend.io/schema/v2.7/krakend.json",
+    "version": 3,
+    "port": 8080,
+    "name": "KrakenD configuration at MyCompany",
+    "endpoints": [
+        {
+            "endpoint": "/users",
+            "method": "GET",
+            "backend": [
+                {
+                    "url_pattern": "/__echo/list-users"
+                }
+            ],
+            "extra_config": {
+                "documentation/postman": {
+                    "name": "List users",
+                    "folder": "/"
+                }
+            }
+        }
+    ]
+}
