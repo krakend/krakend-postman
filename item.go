@@ -1,8 +1,8 @@
 package postman
 
-type itemList []*Item
+type ItemList []*Item
 
-func (b itemList) findItem(name string) *Item {
+func (b ItemList) findItem(name string) *Item {
 	for _, current := range b {
 		if current.Name == name {
 			return current
@@ -15,17 +15,17 @@ type Item struct {
 	Name        string   `json:"name"`
 	Description string   `json:"description,omitempty"`
 	Request     *Request `json:"request,omitempty"`
-	Item        itemList `json:"item,omitempty"`
+	Item        ItemList `json:"item,omitempty"`
 }
 
 func newItem(name string) *Item {
 	return &Item{
 		Name: name,
-		Item: itemList{},
+		Item: ItemList{},
 	}
 }
 
-func createFolder(itemList *itemList, path string, folderOpts *folderOptions) *Item {
+func createFolder(itemList *ItemList, path string, folderOpts *folderOptions) *Item {
 	slicedPath := slicePath(path)
 	if len(slicedPath) == 0 {
 		return nil

@@ -11,7 +11,7 @@ func slicePath(path string) []string {
 	for _, p := range strings.Split(path, separator) {
 		clean := strings.Trim(p, " ")
 		if len(clean) > 0 {
-			paths = append(paths, p)
+			paths = append(paths, clean)
 		}
 	}
 	return paths

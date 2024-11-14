@@ -24,7 +24,8 @@ func ExampleHandleCollection() {
 		},
 	}
 
-	ts := httptest.NewServer(http.HandlerFunc(HandleCollection(Parse(cfg))))
+	parsedConfig, _ := Parse(cfg)
+	ts := httptest.NewServer(http.HandlerFunc(HandleCollection(parsedConfig)))
 	defer ts.Close()
 
 	res, err := http.Get(ts.URL)
@@ -102,10 +103,12 @@ func ExampleParseError() {
 			},
 		},
 	}
-
-	Parse(invalidVersion)
-	Parse(invalidServiceConfig)
-	Parse(invalidEndpointConfig)
+	cases := []config.ServiceConfig{invalidVersion, invalidServiceConfig, invalidEndpointConfig}
+	for _, c := range cases {
+		if _, err := Parse(c); err != nil {
+			fmt.Println(err.Error())
+		}
+	}
 
 	// output:
 	// the provided version is not in semver format
@@ -147,7 +150,10 @@ func TestParse(t *testing.T) {
 				t.Error(err)
 				return
 			}
-			c := Parse(cfg)
+			c, err := Parse(cfg)
+			if err != nil {
+				t.Errorf("unexpected error: %s", err.Error())
+			}
 
 			b, _ := json.MarshalIndent(c, "", "\t")
 			exp, _ := os.ReadFile(test.out)

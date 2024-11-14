@@ -29,7 +29,9 @@ func HandleCollection(c Collection) func(http.ResponseWriter, *http.Request) {
 	}
 }
 
-func MustParse(cfg config.ServiceConfig) (Collection, error) {
+// Parse converts the received service config into a simple POSTMAN collection description
+// @see https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html
+func Parse(cfg config.ServiceConfig) (Collection, error) {
 	serviceOpts, err := parseServiceOptions(&cfg)
 	if err != nil {
 		return Collection{}, err
@@ -42,7 +44,7 @@ func MustParse(cfg config.ServiceConfig) (Collection, error) {
 			Description: serviceOpts.Description,
 			Schema:      postmanJsonSchema,
 		},
-		Item:      itemList{},
+		Item:      ItemList{},
 		Variables: parseVariables(&cfg),
 	}
 	v, err := parseVersion(serviceOpts)
@@ -80,29 +82,17 @@ func MustParse(cfg config.ServiceConfig) (Collection, error) {
 			entry.Request.Description = opts.Description
 		}
 
-		var folder *Item
 		if opts.Folder != "" && opts.Folder != separator {
-			folder = createFolder(&c.Item, opts.Folder, findFolderOptions(serviceOpts, opts.Folder))
+			folder := createFolder(&c.Item, opts.Folder, findFolderOptions(serviceOpts, opts.Folder))
+			if folder != nil {
+				folder.Item = append(folder.Item, entry)
+				continue
+			}
 		}
-
-		if folder != nil {
-			folder.Item = append(folder.Item, entry)
-		} else {
-			c.Item = append(c.Item, entry)
-		}
+		c.Item = append(c.Item, entry)
 	}
 
 	return c, nil
-}
-
-// Parse converts the received service config into a simple POSTMAN collection description
-// @see https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html
-func Parse(cfg config.ServiceConfig) Collection {
-	collection, err := MustParse(cfg)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	return collection
 }
 
 func hash(input string) string {
@@ -112,7 +102,7 @@ func hash(input string) string {
 type Collection struct {
 	Variables []Variable `json:"variables"`
 	Info      Info       `json:"info"`
-	Item      itemList   `json:"item"`
+	Item      ItemList   `json:"item"`
 }
 
 type Info struct {
