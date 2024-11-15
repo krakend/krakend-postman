@@ -1,4 +1,4 @@
-module github.com/krakendio/krakend-postman/v2
+module github.com/krakendio/krakend-postman/v3
 
 go 1.22
 
