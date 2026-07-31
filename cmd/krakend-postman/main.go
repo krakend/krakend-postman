@@ -5,8 +5,8 @@ import (
 	"flag"
 	"fmt"
 
-	postman "github.com/krakend/krakend-postman/v3"
-	"github.com/luraproject/lura/v2/config"
+	postman "github.com/krakend/krakend-postman/v4"
+	"github.com/luraproject/lura/v3/config"
 )
 
 func main() {

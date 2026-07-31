@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/Masterminds/semver/v3"
-	"github.com/luraproject/lura/v2/config"
+	"github.com/luraproject/lura/v3/config"
 )
 
 var (
